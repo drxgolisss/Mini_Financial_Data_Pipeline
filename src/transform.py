@@ -9,6 +9,7 @@ TODO: Generate min/max/avg statistics
 
 import pandas as pd
 
+from src.quality import REQUIRED_COLUMNS
 
 def calculate_daily_returns(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -62,3 +63,27 @@ def get_latest_price(df: pd.DataFrame) -> dict:
         Dictionary with latest prices
     """
     pass
+
+def clean_market_data(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.copy()
+
+    df["date"] = pd.to_datetime(df["date"], errors="coerce")
+    df["symbol"] = df["symbol"].astype(str).str.upper().str.strip()
+
+    price_columns = ["open", "high", "low", "close"]
+    for column in price_columns:
+        df[column] = pd.to_numeric(df[column], errors="coerce")
+
+    df["volume"] = pd.to_numeric(df["volume"], errors="coerce")
+
+    df = df.dropna(subset=["date", "symbol", "open", "high", "low", "close", "volume"])
+    df = df.drop_duplicates(subset=["symbol", "date"])
+    df = df.sort_values(["symbol", "date"])
+
+    df["volume"] = df["volume"].astype("int64")
+
+    return df
+
+
+
+
