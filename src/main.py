@@ -1,13 +1,9 @@
-"""
-Main entry point for the financial data pipeline.
+"""Main entry point for the financial data pipeline."""
 
-TODO: Orchestrate the full pipeline flow
-TODO: Extract -> Validate -> Transform -> Load
-TODO: Add error handling and logging
-"""
+from pathlib import Path
 
-from src import extract, quality, transform, load
-import pandas as pd
+from src import extract
+from src import quality
 
 
 def run_pipeline(symbols: list, start_date: str, end_date: str):
@@ -19,26 +15,22 @@ def run_pipeline(symbols: list, start_date: str, end_date: str):
         start_date: Start date in YYYY-MM-DD format
         end_date: End date in YYYY-MM-DD format
     """
-    # TODO: Step 1 - Extract data from API
-    # raw_data = extract.extract_batch(symbols, start_date, end_date)
-    
-    # TODO: Step 2 - Save raw data to CSV
-    # raw_data.to_csv('data/raw/market_data.csv', index=False)
-    
-    # TODO: Step 3 - Validate data quality
-    # validation_result = quality.validate_data_quality(raw_data)
-    
-    # TODO: Step 4 - Transform and calculate analytics
-    # analytics = transform.calculate_statistics(raw_data)
-    
-    # TODO: Step 5 - Load to SQL Server
-    # load.load_to_sqlserver(analytics, 'analytics_table', connection_string)
-    
-    pass
+    raw_data = extract.extract_batch(
+        symbols,
+        start_date,
+        end_date
+    )
+
+    quality_report = quality.validate_data_quality(raw_data)
+
+    output_path = Path("data/raw/market_data.csv")
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    raw_data.to_csv(output_path, index=False)
+
+    print("Data quality report:")
+    print(quality_report)
+    print(f"Saved {len(raw_data)} rows to {output_path}")
 
 
 if __name__ == '__main__':
-    # Example usage
-    # run_pipeline(['AAPL', 'MSFT'], '2023-01-01', '2024-01-01')
-    print("Financial Data Pipeline")
-    print("TODO: Implement pipeline logic")
+    run_pipeline(["AAPL", "MSFT"], '2023-01-01', '2024-01-01')
