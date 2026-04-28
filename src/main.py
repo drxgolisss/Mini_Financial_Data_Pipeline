@@ -39,6 +39,19 @@ def run_pipeline(symbols: list, start_date: str, end_date: str):
     clean_data.to_csv(cleaned_output_path, index=False)
     print(f"Saved {len(clean_data)} rows to {cleaned_output_path}")
 
+    returns_data = transform.calculate_daily_returns(clean_data)
+    returns_data = transform.calculate_volatility(returns_data)
+
+    returns_output_path = Path("data/processed/daily_returns.csv")
+    returns_data.to_csv(returns_output_path, index=False)
+    print(f"Saved {len(returns_data)} rows to {returns_output_path}")
+
+    statistics_data = transform.calculate_statistics(clean_data)
+
+    statistics_output_path = Path("data/processed/price_statistics.csv")
+    statistics_data.to_csv(statistics_output_path, index=False)
+    print(f"Saved {len(statistics_data)} rows to {statistics_output_path}")
+
 
 if __name__ == '__main__':
     run_pipeline(["AAPL", "MSFT"], '2023-01-01', '2024-01-01')
