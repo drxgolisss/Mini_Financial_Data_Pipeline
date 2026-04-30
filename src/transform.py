@@ -135,6 +135,59 @@ def calculate_statistics(df: pd.DataFrame) -> pd.DataFrame:
     ]
 
 
+def build_daily_returns_mart(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Build the daily returns data mart.
+    """
+    daily_returns = calculate_daily_returns(df)
+
+    daily_returns = daily_returns.dropna(subset=["daily_return"])
+    daily_returns = daily_returns.rename(columns={"close": "close_price"})
+
+    return daily_returns[
+        [
+            "symbol",
+            "date",
+            "close_price",
+            "daily_return",
+        ]
+    ]
+
+
+def build_price_statistics_mart(
+    market_data: pd.DataFrame,
+    daily_returns: pd.DataFrame,
+) -> pd.DataFrame:
+    """
+    Build the price statistics data mart.
+    """
+    price_statistics = calculate_statistics(market_data)
+
+    volatility = (
+        daily_returns.groupby("symbol")["daily_return"]
+        .std()
+        .reset_index(name="volatility")
+    )
+
+    price_statistics = price_statistics.merge(
+        volatility,
+        on="symbol",
+        how="left",
+    )
+
+    return price_statistics[
+        [
+            "symbol",
+            "latest_date",
+            "latest_close",
+            "avg_close",
+            "min_close",
+            "max_close",
+            "volatility",
+        ]
+    ]
+
+
 def get_latest_price(df: pd.DataFrame) -> dict:
     """
     Get the latest available price for each symbol.

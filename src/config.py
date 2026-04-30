@@ -18,7 +18,7 @@ def get_database_config() -> dict:
         "server": getenv("DB_SERVER", "localhost"),
         "port": getenv("DB_PORT", "1433"),
         "database": getenv("DB_NAME", "financial_data"),
-        "username": getenv("DB_USER", "sa"),
+        "username": getenv("DB_USER", ""),
         "password": getenv("DB_PASSWORD", ""),
         "driver": getenv("DB_DRIVER", "ODBC Driver 18 for SQL Server"),
         "trust_server_certificate": getenv("DB_TRUST_SERVER_CERTIFICATE", "yes"),

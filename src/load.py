@@ -3,7 +3,7 @@ Data loading module for Microsoft SQL Server.
 """
 
 import pandas as pd
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.engine import Engine
 
 from src.config import build_sqlserver_connection_string
@@ -52,6 +52,13 @@ def load_to_sqlserver(df: pd.DataFrame, table_name: str) -> None:
     """
     engine = get_db_connection()
 
+    inspector = inspect(engine)
+    if not inspector.has_table(table_name, schema="dbo"):
+        raise ValueError(
+            f"Table dbo.{table_name} does not exist. "
+            "Run sql/create_tables.sql before loading data."
+        )
+
     df.to_sql(
         name=table_name,
         con=engine,
@@ -59,18 +66,6 @@ def load_to_sqlserver(df: pd.DataFrame, table_name: str) -> None:
         if_exists="append",
         index=False,
     )
-
-
-def create_table_if_not_exists(engine, table_schema: dict) -> None:
-    """
-    Create table if it doesn't exist.
-
-    Args:
-        engine: SQLAlchemy engine
-        table_schema: Dictionary with table definition
-    """
-    # TODO: Implement table creation
-    pass
 
 
 if __name__ == "__main__":
