@@ -14,16 +14,7 @@ It extracts historical stock data, validates and cleans it, and produces analyti
 
 ## 🔄 Pipeline Flow
 
-```mermaid
-flowchart LR
-    A[Yahoo Finance API] --> B[Extract Market Data]
-    B --> C[Raw CSV Storage]
-    C --> D[Data Quality Checks]
-    D --> E[Clean Market Data]
-    E --> F[Processed Market Data]
-    F --> G[Daily Returns]
-    F --> H[Price Statistics]
-```
+![Pipeline](docs/pipeline.png)
 
 ---
 
