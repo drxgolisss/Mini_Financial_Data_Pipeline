@@ -1,61 +1,132 @@
-# Financial Market Data Platform
+# 📊 Financial Market Data Platform
 
-A data engineering project for extracting, validating, and analyzing financial market data.
+> A simple data engineering project that implements a local financial market data pipeline.
 
-## Description
+---
 
-This project builds a data pipeline to:
-1. Extract historical financial market data from an external API
-2. Save raw data locally
-3. Validate data quality
-4. Load cleaned data into Microsoft SQL Server
-5. Calculate financial analytics (daily returns, volatility, average close price, min/max price, latest price)
+## 🧭 Overview
 
-## Pipeline Flow
+This project demonstrates a simplified **ETL pipeline** for financial market data.
+
+It extracts historical stock data, validates and cleans it, and produces analytics-ready datasets.
+
+---
+
+## 🔄 Pipeline Flow
+
+```mermaid
+flowchart LR
+    A[Yahoo Finance API] --> B[Extract Market Data]
+    B --> C[Raw CSV Storage]
+    C --> D[Data Quality Checks]
+    D --> E[Clean Market Data]
+    E --> F[Processed Market Data]
+    F --> G[Daily Returns]
+    F --> H[Price Statistics]
+```
+
+---
+
+## ⚙️ What it does
+
+- extracts historical market data using `yfinance`
+- supports multiple stock symbols
+- saves raw data to CSV
+- runs basic data validation (missing values, duplicates, price logic)
+- cleans and standardizes data
+- builds simple analytics:
+  - daily returns
+  - price statistics (min / max / average / latest / volatility)
+
+---
+
+## 🏗 Architecture
 
 ```
-API → Extract → Raw Storage → Quality Checks → Microsoft SQL Server → Analytics Tables
+Yahoo Finance API
+→ Extract
+→ Raw CSV Storage
+→ Data Quality Checks
+→ Data Cleaning
+→ Processed Data
+→ Data Marts
 ```
 
-## Tech Stack
+---
 
-- **Language**: Python
-- **Data Processing**: pandas
-- **API Calls**: requests
-- **Database**: Microsoft SQL Server
-- **ORM**: SQLAlchemy
-- **DB Driver**: pyodbc
-- **Environment**: python-dotenv
+## 📁 Project Structure
 
-## Current Status
+```
+financial-market-data-platform/
+│
+├── data/
+│   ├── raw/
+│   └── processed/
+│
+├── src/
+│   ├── extract.py
+│   ├── quality.py
+│   ├── load.py
+│   ├── transform.py
+│   └── main.py
+│
+├── sql/
+│   ├── create_tables.sql
+│   └── analytics_queries.sql
+│
+├── .env.example
+├── requirements.txt
+└── README.md
+```
 
-**Project skeleton created** - Basic structure and placeholder files ready.
+---
 
-## Future Roadmap
+## 📦 Data Outputs
 
-### Stage 1: Extract data
-- Connect to financial API (e.g., Alpha Vantage, Yahoo Finance)
-- Fetch historical market data (OHLCV data)
+| File | Description |
+|------|------------|
+| `data/raw/market_data.csv` | Raw extracted data |
+| `data/processed/market_data.csv` | Cleaned dataset |
+| `data/processed/daily_returns.csv` | Daily returns |
+| `data/processed/price_statistics.csv` | Aggregated statistics |
 
-### Stage 2: Save raw data
-- Store raw API responses as CSV files
-- Implement basic file organization
+---
 
-### Stage 3: Add data quality checks
-- Validate data completeness
-- Check for missing values
-- Verify data types and ranges
+## ▶️ How to Run
 
-### Stage 4: Load to Microsoft SQL Server
-- Set up SQLAlchemy connection
-- Create target tables
-- Implement bulk insert logic
+### 1. Create virtual environment
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
 
-### Stage 5: Add transformations and analytics
-- Calculate daily returns
-- Compute volatility
-- Generate min/max/avg statistics
+### 2. Install dependencies
+```bash
+pip install -r requirements.txt
+```
 
-### Stage 6: Optional Airflow/dbt integration
-- Orchestrate pipeline with Apache Airflow
-- Add dbt for transformations
+### 3. Configure environment (optional)
+```bash
+cp .env.example .env
+```
+
+### 4. Run pipeline
+```bash
+python -m src.main
+```
+
+---
+
+## 🗺 Roadmap
+
+### ✅ Completed
+- data extraction
+- raw data storage
+- data validation
+- data cleaning
+- data marts
+
+### 🔜 Planned
+- SQL integration improvements
+- Airflow orchestration
+- dbt transformations
